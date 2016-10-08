@@ -1,17 +1,67 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<projectDescription>
-	<name>Explosive Arrows</name>
-	<comment></comment>
-	<projects>
-	</projects>
-	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-	</buildSpec>
-	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
-	</natures>
-</projectDescription>
+package me.LordPrettyASAP.ExplosiveArrows;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+public class ExplosiveCommand implements CommandExecutor {
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		
+		if ((sender instanceof Player)){
+			Player player = (Player)sender;
+			
+			if (player.hasPermission("explosivearrows.toggle")){
+				
+				if (args.length !=1){
+					
+					if(Core.players.contains(player.getName())){
+						Core.players.add(player.getName());
+						sender.sendMessage(ChatColor.GREEN+"Your arrows are now explosive!");
+					}
+					else{
+						Core.players.remove(player.getName());
+						player.sendMessage(ChatColor.YELLOW+"Your arrows are no longer explosive!");
+						
+					}
+					
+				}
+				else{
+						
+					Player target = Bukkit.getPlayer(args[0]);
+					if (target != null){
+						
+						if(Core.players.contains(target.getName())){
+							Core.players.add(target.getName());
+							target.sendMessage(ChatColor.GREEN+"Your arrows are now explosive!");
+							player.sendMessage(ChatColor.GREEN+"You have made " + target.getName() + "'s arrows explosive");
+						}
+						else{
+							Core.players.remove(player.getName());
+							target.sendMessage(ChatColor.YELLOW+"Your arrows are no longer explosive!");
+							player.sendMessage(ChatColor.YELLOW+"You have removed the explosive effect from " + target.getName() + "'s arrows explosive");
+						}
+					}
+					else{
+						sender.sendMessage(ChatColor.RED+"Player not found!");
+						
+					}
+				}
+				
+			}
+			else{
+				sender.sendMessage(ChatColor.RED+"You don't have permission to do that");
+			}
+			
+		}
+		else{
+			sender.sendMessage(ChatColor.RED+"You need to be a player to do this!");
+		}
+		return false;
+	}
+	
+}
